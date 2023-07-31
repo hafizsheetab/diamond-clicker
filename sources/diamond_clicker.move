@@ -62,7 +62,7 @@ module diamond_clicker::game {
         };
         // increment game_store.diamonds by +1
         let game_store = borrow_global_mut<GameStore>(account_address);
-        *game_store.diamonds += 1;
+        *game_store.diamonds = game_store.diamonds + 1;
     }
     fun get_unclaimed_diamonds(account_address: address, current_timestamp_seconds: u64): u64 acquires GameStore {
         // loop over game_store.upgrades - if the powerup exists then calculate the dpm and minutes_elapsed to add the amount to the unclaimed_diamonds
@@ -78,7 +78,7 @@ module diamond_clicker::game {
 
     fun claim(account_address: address) acquires GameStore {
         let game_store = borrow_global_mut<GameStore>(account_address);
-        *game_store.diamonds += get_unclaimed_diamonds(account_address, timestamp::now_seconds());
+        *game_store.diamonds = game_store.diamonds + get_unclaimed_diamonds(account_address, timestamp::now_seconds());
         *game_store.last_claimed_timestamp_seconds = timestamp::now_seconds();
         // set game_store.diamonds to current diamonds + unclaimed_diamonds
         // set last_claimed_timestamp_seconds to the current timestamp in seconds
@@ -105,7 +105,7 @@ module diamond_clicker::game {
             i = i+1;
             if(game_store.upgrades[i].name == POWERUP_NAMES[upgrade_index]){
                 upgrades_exists_flag = true;
-                *game_store.upgrades[i].amount += upgrade_amount;
+                *game_store.upgrades[i].amount = game_store.upgrades[i].amount + upgrade_amount;
                 break;
             }
 
@@ -118,7 +118,7 @@ module diamond_clicker::game {
             });
         }
         // set game_store.diamonds to current diamonds - total_upgrade_cost
-        *game_store.diamonds -= total_upgrade_cost
+        *game_store.diamonds = game_store.diamonds - total_upgrade_cost
     }
 
     #[view]
@@ -136,7 +136,7 @@ module diamond_clicker::game {
         while (i<upgrades_length){
             let (upgrades_exist, upgrades_index) = vector::index_of(&POWERUP_NAMES, game_store.upgrades[i].name);
             if(upgrades_exist){
-                dpm += POWERUP_VALUES[upgrades_index][1] * game_store.upgrades[i].amount;
+                dpm = dpm + POWERUP_VALUES[upgrades_index][1] * game_store.upgrades[i].amount;
             }
             i = i+1
         }
