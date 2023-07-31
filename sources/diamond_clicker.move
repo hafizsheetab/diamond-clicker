@@ -61,12 +61,12 @@ module diamond_clicker::game {
             initialize_game(account);
         };
         // increment game_store.diamonds by +1
-        let game_store = borrow_global_mut<GameStore>(account_address);
+        let game_store = &mut borrow_global_mut<GameStore>(account_address);
         *game_store.diamonds = game_store.diamonds + 1;
     }
     fun get_unclaimed_diamonds(account_address: address, current_timestamp_seconds: u64): u64 acquires GameStore {
         // loop over game_store.upgrades - if the powerup exists then calculate the dpm and minutes_elapsed to add the amount to the unclaimed_diamonds
-        let game_store = borrow_global<GameStore>(account_address);
+        let mut game_store = borrow_global<GameStore>(account_address);
         let minutes_elapsed:u64 = (current_timestamp_seconds - game_store.last_claimed_timestamp_seconds)/60;
         let dpm = get_diamonds_per_minute(account_address);
         let unclaimed_diamonds = dpm * minutes_elapsed;
@@ -77,7 +77,7 @@ module diamond_clicker::game {
     }
 
     fun claim(account_address: address) acquires GameStore {
-        let game_store = borrow_global_mut<GameStore>(account_address);
+        let game_store = &mut borrow_global_mut<GameStore>(account_address);
         *game_store.diamonds = game_store.diamonds + get_unclaimed_diamonds(account_address, timestamp::now_seconds());
         *game_store.last_claimed_timestamp_seconds = timestamp::now_seconds();
         // set game_store.diamonds to current diamonds + unclaimed_diamonds
@@ -93,7 +93,7 @@ module diamond_clicker::game {
         // claim for account address
         claim(account_address);
         // check that the user has enough coins to make the current upgrade
-        let game_store = borrow_global_mut<GameStore>(account_address);
+        let game_store = &mut borrow_global_mut<GameStore>(account_address);
         let power_up_name = vector::borrow(&POWERUP_NAMES, upgrade_index);
         let power_up_value = vector::borrow(&POWERUP_VALUES, upgrade_index);
         let total_upgrade_cost = vector::borrow(power_up_value, 0) * upgrade_amount;
@@ -103,7 +103,7 @@ module diamond_clicker::game {
         let upgrades_length = vector::length(game_store.upgrades);
         let i = 0;
         while (i < upgrades_length){
-            let upgrade_mut = vector::borrow_mut(game_store.upgrades, i);
+            let upgrade_mut = &mut vector::borrow_mut(game_store.upgrades, i);
             i = i+1;
             if(upgrade_mut.name == power_up_name){
                 upgrades_exists_flag = true;
