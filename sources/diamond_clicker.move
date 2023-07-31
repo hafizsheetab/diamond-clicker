@@ -101,16 +101,15 @@ module diamond_clicker::game {
         assert!(game_store.diamonds >= total_upgrade_cost, ERROR_NOT_ENOUGH_DIAMONDS_TO_UPGRADE);
         // loop through game_store upgrades - if the upgrade exists then increment but the upgrade_amount
         let upgrades_exists_flag = false;
-        let upgrades_length = vector::length(upgrades);
+        let upgrades_length = vector::length(game_store.upgrades);
         let i = 0;
         while (i < upgrades_length){
-            let upgrade_mut_name = &mut vector::borrow_mut(game_store.upgrades, i).name;
-            let upgrade_mut_amount = &mut vector::borrow_mut(game_store.upgrades, i).amount;
+            let upgrade_mut = &mut vector::borrow_mut(&mut game_store.upgrades, i)
             i = i+1;
-            if(*upgrade_mut_name == *power_up_name){
+            if(*upgrade_mut.name == *power_up_name){
                 upgrades_exists_flag = true;
-                *upgrade_mut_amount = *upgrade_mut_amount + upgrade_amount;
-                break;
+                *upgrade_mut.amount = *upgrade_mut.amount + upgrade_amount;
+                break
             }
 
         };
