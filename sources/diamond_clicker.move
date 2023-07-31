@@ -66,7 +66,7 @@ module diamond_clicker::game {
     }
     fun get_unclaimed_diamonds(account_address: address, current_timestamp_seconds: u64): u64 acquires GameStore {
         // loop over game_store.upgrades - if the powerup exists then calculate the dpm and minutes_elapsed to add the amount to the unclaimed_diamonds
-        let mut game_store = borrow_global<GameStore>(account_address);
+        let game_store = borrow_global<GameStore>(account_address);
         let minutes_elapsed:u64 = (current_timestamp_seconds - game_store.last_claimed_timestamp_seconds)/60;
         let dpm = get_diamonds_per_minute(account_address);
         let unclaimed_diamonds = dpm * minutes_elapsed;
