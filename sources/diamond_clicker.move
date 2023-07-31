@@ -98,7 +98,7 @@ module diamond_clicker::game {
         assert!(game_store.diamonds >= total_upgrade_cost, ERROR_NOT_ENOUGH_DIAMONDS_TO_UPGRADE);
         // loop through game_store upgrades - if the upgrade exists then increment but the upgrade_amount
         let upgrades_exists_flag = false;
-        let upgrades_length = vector::length(game_store.&upgrades);
+        let upgrades_length = vector::length(game_store.upgrades);
         let i = 0;
         while (i < upgrades_length){
             
@@ -130,7 +130,7 @@ module diamond_clicker::game {
     #[view]
     public fun get_diamonds_per_minute(account_address: address): u64 acquires GameStore {
         let game_store = borrow_global<GameStore>(account_address);
-        let upgrades_length = vector::length(game_store.&upgrades);
+        let upgrades_length = vector::length(game_store.upgrades);
         let i=0;
         let dpm: u64 = 0;
         while (i<upgrades_length){
