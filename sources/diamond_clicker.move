@@ -47,56 +47,107 @@ module diamond_clicker::game {
     */
 
     public fun initialize_game(account: &signer) {
-        // move_to account with new GameStore
+        move_to(account, GameStore {
+            diamonds: 0
+            upgrades: vector::empty<Upgrade>()
+            last_claimed_timestamp_seconds: timestamp::now_seconds() 
+        });
     }
 
     public entry fun click(account: &signer) acquires GameStore {
         // check if GameStore does not exist - if not, initialize_game
-
+        let account_address = signer::address_of(account);
+        if(!exists<GameStore>(account_address)){
+            initialize_game(account);
+        }
         // increment game_store.diamonds by +1
+        let game_store = borrow_global_mut<GameStore>(account_address);
+        *game_store.diamonds += 1;
     }
-
     fun get_unclaimed_diamonds(account_address: address, current_timestamp_seconds: u64): u64 acquires GameStore {
         // loop over game_store.upgrades - if the powerup exists then calculate the dpm and minutes_elapsed to add the amount to the unclaimed_diamonds
+        let game_store = borrow_global<GameStore>(account_address);
+        let minutes_elapsed:u64 = (current_timestamp_seconds - game_store.last_claimed_timestamp_seconds)/60;
+        let dpm = get_diamonds_per_minute(account_address);
+        let unclaimed_diamonds = dpm * minutes_elapsed;
 
+        
         // return unclaimed_diamonds
+        return unclaimed_diamonds;
     }
 
     fun claim(account_address: address) acquires GameStore {
+        let game_store = borrow_global_mut<GameStore>(account_address);
+        *game_store.diamonds += get_unclaimed_diamonds(account_address, timestamp::now_seconds());
+        *game_store.last_claimed_timestamp_seconds = timestamp::now_seconds();
         // set game_store.diamonds to current diamonds + unclaimed_diamonds
         // set last_claimed_timestamp_seconds to the current timestamp in seconds
     }
 
     public entry fun upgrade(account: &signer, upgrade_index: u64, upgrade_amount: u64) acquires GameStore {
+        let account_address = signer::address_of(account);
+        assert!(exists<GameStore>(account_address), ERROR_GAME_STORE_DOES_NOT_EXIST);
         // check that the game store exists
         // check the powerup_names length is greater than or equal to upgrade_index
-
+        assert!(vector::length(&POWERUP_NAMES) > upgrade_index, ERROR_UPGRADE_DOES_NOT_EXIST);
         // claim for account address
-
+        claim(account_address);
         // check that the user has enough coins to make the current upgrade
-
+        let game_store = borrow_global_mut<GameStore>(account_address);
+        let total_upgrade_cost = POWERUP_VALUES[upgrade_index][0] * upgrade_amount;
+        assert!(game_store.diamonds >= total_upgrade_cost, ERROR_NOT_ENOUGH_DIAMONDS_TO_UPGRADE);
         // loop through game_store upgrades - if the upgrade exists then increment but the upgrade_amount
+        let upgrades_exists_flag = false;
+        let upgrades_length = vector::length(game_store.&upgrades);
+        let i = 0;
+        while (i < upgrades_length){
+            
+            i = i+1;
+            if(game_store.upgrades[i].name == POWERUP_NAMES[upgrade_index]){
+                upgrades_exists_flag = true;
+                *game_store.upgrades[i].amount += upgrade_amount;
+                break;
+            }
 
+        }
         // if upgrade_existed does not exist then create it with the base upgrade_amount
-
+        if(!upgrades_exists_flag){
+            vector::push_back(game_store.upgrades, Upgrade {
+                name: POWERUP_NAMES[upgrade_index]
+                amount: upgrade_amount
+            });
+        }
         // set game_store.diamonds to current diamonds - total_upgrade_cost
+        *game_store.diamonds -= total_upgrade_cost
     }
 
     #[view]
     public fun get_diamonds(account_address: address): u64 acquires GameStore {
-        // return game_store.diamonds + unclaimed_diamonds
+        let game_store = borrow_global<GameStore>(account_address);
+        return game_store.diamonds + get_unclaimed_diamonds(account_address,  timestamp::now_seconds());
     }
 
     #[view]
     public fun get_diamonds_per_minute(account_address: address): u64 acquires GameStore {
+        let game_store = borrow_global<GameStore>(account_address);
+        let upgrades_length = vector::length(game_store.&upgrades);
+        let i=0;
+        let dpm: u64 = 0;
+        while (i<upgrades_length){
+            let (upgrades_exist, upgrades_index) = vector::index_of(&POWERUP_NAMES, game_store.upgrades[i].name);
+            if(upgrades_exist){
+                dpm += POWERUP_VALUES[upgrades_index][1] * game_store.upgrades[i].amount;
+            }
+        }
         // loop over game_store.upgrades - calculate dpm * current_upgrade.amount to get the total diamonds_per_minute
-
+        return dpm;
         // return diamonds_per_minute of all the user's powerups
     }
 
     #[view]
     public fun get_powerups(account_address: address): vector<Upgrade> acquires GameStore {
-        // return game_store.upgrades
+        let game_store = borrow_global<GameStore>(account_address)
+        return game_store.upgrades
     }
 
     /*
