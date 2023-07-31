@@ -133,7 +133,7 @@ module diamond_clicker::game {
         let upgrades_length = vector::length(game_store.upgrades);
         let i=0;
         let dpm: u64 = 0;
-        while (i<upgrades_length){
+        while (i < upgrades_length){
             let (upgrades_exist, upgrades_index) = vector::index_of(&POWERUP_NAMES, game_store.upgrades[i].name);
             if(upgrades_exist){
                 dpm = dpm + POWERUP_VALUES[upgrades_index][1] * game_store.upgrades[i].amount;
