@@ -108,16 +108,16 @@ module diamond_clicker::game {
             let upgrade_mut_name = &mut vector::borrow_mut(upgrades, i).name;
             let upgrade_mut_amount = &mut vector::borrow_mut(upgrades, i).amount;
             i = i+1;
-            if(*name == *power_up_name){
+            if(*upgrade_mut_name == *power_up_name){
                 upgrades_exists_flag = true;
-                *amount = *amount + upgrade_amount;
+                *upgrade_mut_amount = *upgrade_mut_amount + upgrade_amount;
                 break;
             }
 
         };
         // if upgrade_existed does not exist then create it with the base upgrade_amount
         if(!upgrades_exists_flag){
-            vector::push_back(game_store.upgrades, Upgrade {
+            vector::push_back(upgrades, Upgrade {
                 name: power_up_name,
                 amount: upgrade_amount
             });
