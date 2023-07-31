@@ -122,7 +122,7 @@ module diamond_clicker::game {
             });
         };
         // set game_store.diamonds to current diamonds - total_upgrade_cost
-        let diamonds = &mut game_store.diamonds
+        let diamonds = &mut game_store.diamonds;
         *diamonds = *diamonds - total_upgrade_cost;
     }
 
