@@ -136,12 +136,12 @@ module diamond_clicker::game {
 
     #[view]
     public fun get_diamonds_per_minute(account_address: address): u64 acquires GameStore {
-        let upgrades = borrow_global<GameStore>(account_address).upgrades;
-        let upgrades_length = vector::length(&upgrades);
+        let game_store = borrow_global<GameStore>(account_address)
+        let upgrades_length = vector::length(&game_store.upgrades);
         let i=0;
         let dpm: u64 = 0;
         while (i < upgrades_length){
-            let upgrade = vector::borrow(&upgrades, i);
+            let upgrade = vector::borrow(&game_store.upgrades, i);
             let (upgrades_exist, upgrades_index) = vector::index_of(&POWERUP_NAMES, &upgrade.name);
             if(upgrades_exist){
                 let power_up_value = vector::borrow(&POWERUP_VALUES, upgrades_index);
@@ -150,7 +150,7 @@ module diamond_clicker::game {
             i = i+1;
         };
         // loop over game_store.upgrades - calculate dpm * current_upgrade.amount to get the total diamonds_per_minute
-        return dpm
+        dpm
         // return diamonds_per_minute of all the user's powerups
     }
 
