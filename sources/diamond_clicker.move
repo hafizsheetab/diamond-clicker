@@ -108,7 +108,7 @@ module diamond_clicker::game {
             i = i+1;
             if(upgrade_mut.name == *power_up_name){
                 upgrades_exists_flag = true;
-                let amount = &mut upgrade_mut.amount
+                let amount = &mut upgrade_mut.amount;
                 *amount = amount + upgrade_amount;
                 break
             }
