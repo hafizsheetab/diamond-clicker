@@ -137,7 +137,7 @@ module diamond_clicker::game {
             let (upgrades_exist, upgrades_index) = vector::index_of(&POWERUP_NAMES, game_store.upgrades[i].name);
             if(upgrades_exist){
                 dpm = dpm + POWERUP_VALUES[upgrades_index][1] * game_store.upgrades[i].amount;
-            }
+            };
             i = i+1;
         };
         // loop over game_store.upgrades - calculate dpm * current_upgrade.amount to get the total diamonds_per_minute
