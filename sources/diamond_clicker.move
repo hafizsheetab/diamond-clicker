@@ -109,14 +109,14 @@ module diamond_clicker::game {
                 break;
             }
 
-        }
+        };
         // if upgrade_existed does not exist then create it with the base upgrade_amount
         if(!upgrades_exists_flag){
             vector::push_back(game_store.upgrades, Upgrade {
                 name: POWERUP_NAMES[upgrade_index],
                 amount: upgrade_amount
             });
-        }
+        };
         // set game_store.diamonds to current diamonds - total_upgrade_cost
         *game_store.diamonds = game_store.diamonds - total_upgrade_cost
     }
@@ -138,8 +138,8 @@ module diamond_clicker::game {
             if(upgrades_exist){
                 dpm = dpm + POWERUP_VALUES[upgrades_index][1] * game_store.upgrades[i].amount;
             }
-            i = i+1
-        }
+            i = i+1;
+        };
         // loop over game_store.upgrades - calculate dpm * current_upgrade.amount to get the total diamonds_per_minute
         return dpm;
         // return diamonds_per_minute of all the user's powerups
@@ -147,8 +147,8 @@ module diamond_clicker::game {
 
     #[view]
     public fun get_powerups(account_address: address): vector<Upgrade> acquires GameStore {
-        let game_store = borrow_global<GameStore>(account_address)
-        return game_store.upgrades
+        let game_store = borrow_global<GameStore>(account_address);
+        return game_store.upgrades;
     }
 
     /*
