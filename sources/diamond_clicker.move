@@ -138,11 +138,11 @@ module diamond_clicker::game {
         let i=0;
         let dpm: u64 = 0;
         while (i < upgrades_length){
-            let upgrade: Upgrade = vector::borrow(upgrades, i);
-            let (upgrades_exist, upgrades_index) = vector::index_of(&POWERUP_NAMES, upgrade.name);
+            let upgrade = vector::borrow(&upgrades, i);
+            let (upgrades_exist, upgrades_index) = vector::index_of(&POWERUP_NAMES, upgrade.&name);
             if(upgrades_exist){
                 let power_up_value = vector::borrow(&POWERUP_VALUES, upgrades_index);
-                dpm = dpm + vector::borrow(power_up_value, 1) * upgrade.amount;
+                dpm = dpm + *vector::borrow(power_up_value, 1) * upgrade.amount;
             };
             i = i+1;
         };
@@ -154,7 +154,7 @@ module diamond_clicker::game {
     #[view]
     public fun get_powerups(account_address: address): vector<Upgrade> acquires GameStore {
         let game_store = borrow_global<GameStore>(account_address);
-        return game_store.upgrades;
+        return game_store.upgrades
     }
 
     /*
