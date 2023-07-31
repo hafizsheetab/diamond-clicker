@@ -104,7 +104,7 @@ module diamond_clicker::game {
         let upgrades_length = vector::length(game_store.upgrades);
         let i = 0;
         while (i < upgrades_length){
-            let upgrade_mut = &mut vector::borrow_mut(&mut game_store.upgrades, i)
+            let upgrade_mut = &mut vector::borrow_mut(&mut game_store.upgrades, i);
             i = i+1;
             if(*upgrade_mut.name == *power_up_name){
                 upgrades_exists_flag = true;
