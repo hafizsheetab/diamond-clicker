@@ -116,13 +116,14 @@ module diamond_clicker::game {
         };
         // if upgrade_existed does not exist then create it with the base upgrade_amount
         if(!upgrades_exists_flag){
-            vector::push_back(game_store.upgrades, Upgrade {
+            vector::push_back(&mut game_store.upgrades, Upgrade {
                 name: *power_up_name,
                 amount: upgrade_amount
             });
         };
         // set game_store.diamonds to current diamonds - total_upgrade_cost
-        *game_store.diamonds = *game_store.diamonds - total_upgrade_cost;
+        let diamonds = &mut game_store.diamonds
+        *diamonds = *diamonds - total_upgrade_cost;
     }
 
     #[view]
