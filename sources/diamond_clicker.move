@@ -61,8 +61,8 @@ module diamond_clicker::game {
             initialize_game(account);
         };
         // increment game_store.diamonds by +1
-        let game_store = &mut borrow_global_mut<GameStore>(account_address);
-        *game_store.diamonds = game_store.diamonds + 1;
+        let diamonds = &mut borrow_global_mut<GameStore>(account_address);
+        *diamonds = *diamonds + 1;
     }
     fun get_unclaimed_diamonds(account_address: address, current_timestamp_seconds: u64): u64 acquires GameStore {
         // loop over game_store.upgrades - if the powerup exists then calculate the dpm and minutes_elapsed to add the amount to the unclaimed_diamonds
@@ -79,7 +79,7 @@ module diamond_clicker::game {
     fun claim(account_address: address) acquires GameStore {
         let diamonds = &mut borrow_global_mut<GameStore>(account_address).diamonds;
         let last_claimed_timestamp_seconds = &mut borrow_global_mut<GameStore>(account_address).last_claimed_timestamp_seconds;
-        *diamonds = diamonds + get_unclaimed_diamonds(account_address, timestamp::now_seconds());
+        *diamonds = *diamonds + get_unclaimed_diamonds(account_address, timestamp::now_seconds());
         *last_claimed_timestamp_seconds = timestamp::now_seconds();
         // set game_store.diamonds to current diamonds + unclaimed_diamonds
         // set last_claimed_timestamp_seconds to the current timestamp in seconds
