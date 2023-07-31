@@ -94,19 +94,18 @@ module diamond_clicker::game {
         // claim for account address
         claim(account_address);
         // check that the user has enough coins to make the current upgrade
-        let upgrades = &mut borrow_global_mut<GameStore>(account_address).upgrades;
-        let diamonds = &mut borrow_global_mut<GameStore>(account_address).diamonds;
+        let game_store = &mut borrow_global_mut<GameStore>(account_address).upgrades;
         let power_up_name = vector::borrow(&POWERUP_NAMES, upgrade_index);
         let power_up_value = vector::borrow(&POWERUP_VALUES, upgrade_index);
         let total_upgrade_cost = *vector::borrow(power_up_value, 0) * upgrade_amount;
-        assert!(*diamonds >= total_upgrade_cost, ERROR_NOT_ENOUGH_DIAMONDS_TO_UPGRADE);
+        assert!(*game_store.diamonds >= total_upgrade_cost, ERROR_NOT_ENOUGH_DIAMONDS_TO_UPGRADE);
         // loop through game_store upgrades - if the upgrade exists then increment but the upgrade_amount
         let upgrades_exists_flag = false;
         let upgrades_length = vector::length(upgrades);
         let i = 0;
         while (i < upgrades_length){
-            let upgrade_mut_name = &mut vector::borrow_mut(upgrades, i).name;
-            let upgrade_mut_amount = &mut vector::borrow_mut(upgrades, i).amount;
+            let upgrade_mut_name = &mut vector::borrow_mut(game_store.upgrades, i).name;
+            let upgrade_mut_amount = &mut vector::borrow_mut(game_store.upgrades, i).amount;
             i = i+1;
             if(*upgrade_mut_name == *power_up_name){
                 upgrades_exists_flag = true;
@@ -117,13 +116,13 @@ module diamond_clicker::game {
         };
         // if upgrade_existed does not exist then create it with the base upgrade_amount
         if(!upgrades_exists_flag){
-            vector::push_back(upgrades, Upgrade {
+            vector::push_back(game_store.upgrades, Upgrade {
                 name: *power_up_name,
                 amount: upgrade_amount
             });
         };
         // set game_store.diamonds to current diamonds - total_upgrade_cost
-        *diamonds = *diamonds - total_upgrade_cost;
+        *game_store.diamonds = *game_store.diamonds - total_upgrade_cost;
     }
 
     #[view]
