@@ -94,7 +94,7 @@ module diamond_clicker::game {
         // claim for account address
         claim(account_address);
         // check that the user has enough coins to make the current upgrade
-        let game_store = &mut borrow_global_mut<GameStore>(account_address);
+        let game_store = borrow_global_mut<GameStore>(account_address);
         let power_up_name = vector::borrow(&POWERUP_NAMES, upgrade_index);
         let power_up_value = vector::borrow(&POWERUP_VALUES, upgrade_index);
         let total_upgrade_cost = *vector::borrow(power_up_value, 0) * upgrade_amount;
