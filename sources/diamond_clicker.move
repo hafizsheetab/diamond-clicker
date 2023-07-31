@@ -59,7 +59,7 @@ module diamond_clicker::game {
         let account_address = signer::address_of(account);
         if(!exists<GameStore>(account_address)){
             initialize_game(account);
-        }
+        };
         // increment game_store.diamonds by +1
         let game_store = borrow_global_mut<GameStore>(account_address);
         *game_store.diamonds += 1;
