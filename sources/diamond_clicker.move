@@ -48,9 +48,9 @@ module diamond_clicker::game {
 
     public fun initialize_game(account: &signer) {
         move_to(account, GameStore {
-            diamonds: 0
-            upgrades: vector::empty<Upgrade>()
-            last_claimed_timestamp_seconds: timestamp::now_seconds() 
+            diamonds: 0,
+            upgrades: vector::empty<Upgrade>(),
+            last_claimed_timestamp_seconds: timestamp::now_seconds() ,
         });
     }
 
@@ -113,7 +113,7 @@ module diamond_clicker::game {
         // if upgrade_existed does not exist then create it with the base upgrade_amount
         if(!upgrades_exists_flag){
             vector::push_back(game_store.upgrades, Upgrade {
-                name: POWERUP_NAMES[upgrade_index]
+                name: POWERUP_NAMES[upgrade_index],
                 amount: upgrade_amount
             });
         }
