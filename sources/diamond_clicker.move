@@ -134,7 +134,7 @@ module diamond_clicker::game {
     #[view]
     public fun get_diamonds_per_minute(account_address: address): u64 acquires GameStore {
         let upgrades = borrow_global<GameStore>(account_address).upgrades;
-        let upgrades_length = vector::length(upgrades);
+        let upgrades_length = vector::length(&upgrades);
         let i=0;
         let dpm: u64 = 0;
         while (i < upgrades_length){
