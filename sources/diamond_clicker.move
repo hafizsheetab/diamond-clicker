@@ -61,7 +61,7 @@ module diamond_clicker::game {
             initialize_game(account);
         };
         // increment game_store.diamonds by +1
-        let diamonds = &mut borrow_global_mut<GameStore>(account_address);
+        let diamonds = &mut borrow_global_mut<GameStore>(account_address).diamonds;
         *diamonds = *diamonds + 1;
     }
     fun get_unclaimed_diamonds(account_address: address, current_timestamp_seconds: u64): u64 acquires GameStore {
