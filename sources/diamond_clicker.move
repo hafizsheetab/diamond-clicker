@@ -95,11 +95,12 @@ module diamond_clicker::game {
         assert!(vector::length(&POWERUP_NAMES) > upgrade_index, ERROR_UPGRADE_DOES_NOT_EXIST);
         // claim for account address
         claim(account_address);
-        // check that the user has enough coins to make the current upgrade
+       
         let game_store = borrow_global_mut<GameStore>(account_address);
         let power_up_name = vector::borrow(&POWERUP_NAMES, upgrade_index);
         let power_up_value = vector::borrow(&POWERUP_VALUES, upgrade_index);
         let total_upgrade_cost = *vector::borrow(power_up_value, 0) * upgrade_amount;
+         // check that the user has enough coins to make the current upgrade
         assert!(game_store.diamonds >= total_upgrade_cost, ERROR_NOT_ENOUGH_DIAMONDS_TO_UPGRADE);
         // loop through game_store upgrades - if the upgrade exists then increment but the upgrade_amount
         let upgrades_exists_flag = false;
