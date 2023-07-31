@@ -77,7 +77,7 @@ module diamond_clicker::game {
     }
 
     fun claim(account_address: address) acquires GameStore {
-        let game_store = borrow_global_mut<GameStore>(account_address)
+        let game_store = borrow_global_mut<GameStore>(account_address);
         let diamonds = &mut game_store.diamonds;
         let last_claimed_timestamp_seconds = &mut game_store.last_claimed_timestamp_seconds;
         *diamonds = *diamonds + get_unclaimed_diamonds(account_address, timestamp::now_seconds());
