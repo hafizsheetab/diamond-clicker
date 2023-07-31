@@ -118,7 +118,7 @@ module diamond_clicker::game {
         // if upgrade_existed does not exist then create it with the base upgrade_amount
         if(!upgrades_exists_flag){
             vector::push_back(upgrades, Upgrade {
-                name: power_up_name,
+                name: *power_up_name,
                 amount: upgrade_amount
             });
         };
