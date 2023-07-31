@@ -105,11 +105,12 @@ module diamond_clicker::game {
         let upgrades_length = vector::length(upgrades);
         let i = 0;
         while (i < upgrades_length){
-            let upgrade_mut: Upgrade = &mut vector::borrow_mut(upgrades, i);
+            let upgrade_mut_name = &mut vector::borrow_mut(upgrades, i).name;
+            let upgrade_mut_amount = &mut vector::borrow_mut(upgrades, i).amount;
             i = i+1;
-            if(upgrade_mut.name == *power_up_name){
+            if(*name == *power_up_name){
                 upgrades_exists_flag = true;
-                *upgrade_mut.amount = *upgrade_mut.amount + upgrade_amount;
+                *amount = *amount + upgrade_amount;
                 break;
             }
 
